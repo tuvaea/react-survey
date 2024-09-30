@@ -1,5 +1,6 @@
 // Components don't need to be separeted into individual files
 // Here we have a smaller component that helps compose the AnswersItem below
+import PropTypes from 'prop-types';
 
 const answersSet = {
   swimming: "Swimming",
@@ -11,8 +12,8 @@ const answersSet = {
 function ItemsList({ list }) {
   return (
     <ul>
-      {list.map((item) => (
-        <li>{answersSet[item]}</li>
+      {list.map((item, index) => (
+        <li key={index}>{answersSet[item]}</li>
       ))}
     </ul>
   );
@@ -32,10 +33,10 @@ export default function AnswersItem({
           <em>How do you rate your rubber duck colour?</em>
           <span className="answer__line">{colour}</span>
         </p>
-        <p>
-          <em>How do you like to spend time with your rubber duck?</em>
+        <div>
+          <p><em>How do you like to spend time with your rubber duck?</em></p>
           <ItemsList list={timeSpent} />
-        </p>
+        </div>
         <p>
           <em>What else have you got to say about your rubber duck?</em>
           <span className="answer__line">{review}</span>
@@ -44,3 +45,16 @@ export default function AnswersItem({
     </li>
   );
 }
+
+ItemsList.propTypes = {
+  list: PropTypes.arrayOf(PropTypes.string),
+};
+
+AnswersItem.propTypes = {
+  answerItem: PropTypes.shape({
+    username: PropTypes.string,
+    colour: PropTypes.string,
+    timeSpent: PropTypes.arrayOf(PropTypes.string), 
+    review: PropTypes.string,
+  }).isRequired,
+};
