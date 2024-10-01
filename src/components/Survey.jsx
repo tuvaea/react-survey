@@ -3,26 +3,41 @@ import { Form } from "./Form";
 import AnswersItem from "./AnswersItem";
 
 function Survey() {
-  const [open, setOpen] = useState(false); //Ignore this state
+  const [answers, setAnswers] = useState([]);
+  const [editIndex, setEditIndex] = useState(null); 
 
-  const [submittedForms, setSubmittedForms] = useState([]);
+  const handleFormSubmit = (newAnswer) => {
+    if (editIndex !== null) {
+      const updatedAnswers = answers.map((answer, index) =>
+        index === editIndex ? newAnswer : answer
+      );
+      setAnswers(updatedAnswers);
+      setEditIndex(null); 
+    } else {
+      setAnswers([...answers, newAnswer]);
+    }
+  };
 
-  const handleFormSubmit = (formData) => {
-    setSubmittedForms((prevForms) => [...prevForms, formData]);
+  const handleEdit = (index) => {
+    setEditIndex(index);
   };
 
   return (
     <main className="survey">
-      <section className={`survey__list ${open ? "open" : ""}`}>
+      <section className="survey__list">
         <h2>Answers list</h2>
         <ul>
-          {submittedForms.map((item, index) => (
-            <AnswersItem key={index} answerItem={item} />
+          {answers.map((answer, index) => (
+            <AnswersItem
+              key={index}
+              answerItem={answer}
+              onEdit={() => handleEdit(index)}
+            />
           ))}
         </ul>
       </section>
       <section className="survey__form">
-        <Form onSubmit={handleFormSubmit}/>
+        <Form onSubmit={handleFormSubmit} initialData={editIndex !== null ? answers[editIndex] : null} />
       </section>
     </main>
   );
